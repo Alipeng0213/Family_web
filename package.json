@@ -43,7 +43,7 @@
     "customize-cra": "^1.0.0-alpha.0",
     "fetch-mock": "^6.4.3",
     "gh-pages": "^2.0.1",
-    "http-proxy-middleware": "^0.19.1",
+    "http-proxy-middleware": "^2.0.6",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",
     "mockjs": "^1.1.0",

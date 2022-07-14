@@ -26,17 +26,10 @@ export default {
 
     // 每次请求头部都会带着这些参数
     withHeaders: () => ({
-      token: store.getStore("token"),
+      "Authorization": "Bearer " + store.getStore("token"),
+      "x-requested-with": "XMLHttpRequest"
     }),
 
-    /**
-     * 因为modelEnhance需要知道服务器反回的数据，
-     * 什么样的是成功，什么样的是失败，如
-     * {status: true, data: ...} // 代表成功
-     * {status: false, message: ...} // 代表失败
-     * 实际中应该通过服务端反回的response中的
-     * 成功失败标识来进行区分
-     */
     afterResponse: response => {
       const { status, message } = response;
       if (status) {

@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Button, Input, Checkbox, Spin, Form } from 'antd';
 import logoImg from 'assets/images/logo1.png';
 import './index.less';
-import {login} from "../service";
+import {login, getOrder} from "../service";
 
 const { Link } = router;
 const { Content } = Layout;
@@ -22,11 +22,11 @@ export default class Login extends Component {
     const { dispatch } = this.props;
     const _that = this;
     _that.setState({loading: true})
-    login(values).then(rsp=> {
-      console.log(rsp)
-      dispatch(routerRedux.replace("/"))
+    login(values.username, values.password).then(rsp=> {
+        getOrder().then(rsp=> {
+          console.log(rsp)
+        })
     }).catch(error=> console.log(error))
-
   };
 
   render() {
@@ -41,7 +41,7 @@ export default class Login extends Component {
                 <b>LANIF</b>
                 <span>Admin</span>
               </div>
-              <FormItem name="userName" rules={[{ required: true, message: '请输入您的用户名，示例admin' }]}>
+              <FormItem name="username" rules={[{ required: true, message: '请输入您的用户名，示例admin' }]}>
                 <Input
                   size="large"
                   prefix={<UserOutlined />}

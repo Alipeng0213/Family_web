@@ -1,34 +1,46 @@
-// https://facebook.github.io/create-react-app/docs/proxying-api-requests-in-development#configuring-the-proxy-manually
-// https://github.com/chimurai/http-proxy-middleware
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
-const proxy = require('http-proxy-middleware');
+module.exports = function (app) {
+    app.use(
+        createProxyMiddleware('/api', {
+            target: 'http://localhost:8080',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/api': ''
+            }
+        })
+    );
+    app.use(
+        createProxyMiddleware('/power/login', {
+            target: 'http://localhost:8080',
+            changeOrigin: true,
+            selfHandleResponse : true,
+            pathRewrite: async function (path, req) {
+                if(path == "/power/login") {
+                    path = "/connect/token?client_id=client_1&client_secret=123456&scope=select&grant_type=password";
+                    return path
+                }
+            }
+            ,onProxyRes: async (proxyRes, req, res) => {
+                let body = [];
+                proxyRes.on('data', function (chunk) {
+                    body.push(chunk);
+                });
+                proxyRes.on('end', function () {
+                    body = Buffer.concat(body).toString();
+                    let data = JSON.parse(body);
+                    res.json({
+                        code: 200,
+                        data: {
+                            access_token: data.access_token,
+                            refresh_token: data.refresh_token,
+                            expires_in: data.expires_in
+                        }
+                    })
+                });
+            }
+        })
+    );
 
-module.exports = function(app) {
-  app.use(
-    proxy('/api', {
-      target: 'http://localhost:8080',
-      changeOrigin: true,
-      pathRewrite: {
-        '^/api': ''
-      }
-    })
-  );
-  // app.use(
-  //   proxy('/api', {
-  //     target: 'http://aaa:1000',
-  //     changeOrigin: true,
-  //     pathRewrite: {
-  //       '^/api': ''
-  //     }
-  //   })
-  // );
-  // app.use(
-  //   proxy('/xxx', {
-  //     target: 'http://bbb:2000',
-  //     changeOrigin: true,
-  //     pathRewrite: {
-  //       '^/xxx': ''
-  //     }
-  //   })
-  // );
+
 };
