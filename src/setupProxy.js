@@ -32,9 +32,10 @@ module.exports = function (app) {
                     res.json({
                         code: 200,
                         data: {
+                            user: data.user.name,
                             access_token: data.access_token,
                             refresh_token: data.refresh_token,
-                            expires_in: data.expires_in
+                            expiration: data.expiration
                         }
                     })
                 });

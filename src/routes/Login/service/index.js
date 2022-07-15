@@ -12,15 +12,22 @@ async function login(username, password) {
     }).then(rsp=>{
         if(rsp.code == 200) {
             store.setStore("token", rsp.data.access_token)
+            store.setStore("refresh_token", rsp.data.refresh_token)
+            store.setStore("expiration", rsp.data.expiration)
+            store.setStore("user", rsp.data.user)
         }
+        return rsp;
     })
 }
 
-async function getOrder() {
-    return request.get("/order/12")
+async function loginOut() {
+    request.get("/order/22", {
+        "password": "223"
+    })
 }
+
 export {
     login,
-    getOrder
+    loginOut
 
 }

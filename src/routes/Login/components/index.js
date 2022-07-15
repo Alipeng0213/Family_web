@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Button, Input, Checkbox, Spin, Form } from 'antd';
 import logoImg from 'assets/images/logo1.png';
 import './index.less';
-import {login, getOrder} from "../service";
+import {login} from "../service";
 
 const { Link } = router;
 const { Content } = Layout;
@@ -23,9 +23,9 @@ export default class Login extends Component {
     const _that = this;
     _that.setState({loading: true})
     login(values.username, values.password).then(rsp=> {
-        getOrder().then(rsp=> {
-          console.log(rsp)
-        })
+      if(rsp.code == 200) {
+        dispatch(routerRedux.replace("/", ""))
+      }
     }).catch(error=> console.log(error))
   };
 

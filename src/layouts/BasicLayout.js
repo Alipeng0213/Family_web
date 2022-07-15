@@ -77,8 +77,7 @@ export default class BasicLayout extends React.PureComponent {
 
   // 检查有户是否登录
   checkLoginState() {
-    const user = $$.getStore('user');
-    if (!user) {
+    if (!$$.getStore('user') || !$$.getStore('token')) {
       this.props.dispatch(routerRedux.replace('/sign/login'));
     }
   }

@@ -34,6 +34,7 @@ import Modal from './UI/Modal';
 import CRUD from './Business/CRUD';
 import CRUDDetail from './Business/CRUD/routers/Detail';
 import Image from './UI/Image';
+import Index from './Index/index';
 
 /**
  * 主路由配置
@@ -60,9 +61,10 @@ const routesConfig = app => [
     path: '/',
     title: '系统中心',
     component: BasicLayout,
-    indexRoute: '/dashboard',
+    indexRoute: '/index',
     childRoutes: [
       Dashboard(app),
+      Index(app),
       Blank(app),
       Toolbar(app),
       Column(),

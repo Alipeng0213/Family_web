@@ -73,7 +73,6 @@ export const createRoute = (app, routesConfig) => {
   const routeProps = {
     key: path || $$.randomStr(4),
     render: props => {
-      // 此处可以做路由权限判断
       setDocumentTitle(title);
       return <Comp routerData={otherProps} {...props} />
     }

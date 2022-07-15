@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import Icon from '../Icon';
 import { Popover, Badge, Avatar } from 'antd';
-import { router } from 'dva';
+import {connect, router} from 'dva';
 import cx from 'classnames';
 import './style/index.less';
 import logoImg from 'assets/images/logo.png';
 import SearchBox from './SearchBox';
+import {loginOut} from '../../routes/Login/service';
+import {store} from "cmn-utils";
 const { Link } = router;
 
 /**
@@ -63,6 +65,16 @@ class NavBar extends PureComponent {
       openSearchBox: true
     });
   };
+
+  handlerLoginOut = () => {
+    loginOut().then(()=> {
+      store.removeStore("token")
+      store.removeStore("refresh_token")
+      store.removeStore("expiration")
+      store.removeStore("user")
+      window.location.reload()
+    })
+  }
 
   render() {
     const { openSearchBox } = this.state;
@@ -158,7 +170,37 @@ class NavBar extends PureComponent {
               placement="bottomRight"
               title={`WELCOME ${user.userName}`}
               overlayClassName={cx('navbar-popup', { [theme]: !!theme })}
-              content={<UserDropDown />}
+              content={
+                <ul className="dropdown-menu list-group dropdown-persist">
+                  <li className="list-group-item">
+                    <a className="animated animated-short fadeInUp">
+                      <Icon type="mail" /> 信息
+                      <Badge count={5} className="label" />
+                    </a>
+                  </li>
+                  <li className="list-group-item">
+                    <a className="animated animated-short fadeInUp">
+                      <Icon type="users" /> 好友
+                      <Badge count={6} className="label" />
+                    </a>
+                  </li>
+                  <li className="list-group-item">
+                    <a className="animated animated-short fadeInUp">
+                      <Icon type="gear" /> 帐户设置
+                    </a>
+                  </li>
+                  <li className="list-group-item">
+                    <a className="animated animated-short fadeInUp">
+                      <Icon type="ring" /> 通知
+                    </a>
+                  </li>
+                  <li className="list-group-item dropdown-footer" onClick={this.handlerLoginOut}>
+                    <a className="animated animated-short fadeInUp">
+                      <Icon type="poweroff"/> 退出
+                    </a>
+                  </li>
+                </ul>
+              }
               trigger="click"
             >
               <a className="dropdown-toggle">
@@ -176,37 +218,5 @@ class NavBar extends PureComponent {
     );
   }
 }
-
-const UserDropDown = props => (
-  <ul className="dropdown-menu list-group dropdown-persist">
-    <li className="list-group-item">
-      <a className="animated animated-short fadeInUp">
-        <Icon type="mail" /> 信息
-        <Badge count={5} className="label" />
-      </a>
-    </li>
-    <li className="list-group-item">
-      <a className="animated animated-short fadeInUp">
-        <Icon type="users" /> 好友
-        <Badge count={6} className="label" />
-      </a>
-    </li>
-    <li className="list-group-item">
-      <a className="animated animated-short fadeInUp">
-        <Icon type="gear" /> 帐户设置
-      </a>
-    </li>
-    <li className="list-group-item">
-      <a className="animated animated-short fadeInUp">
-        <Icon type="ring" /> 通知
-      </a>
-    </li>
-    <li className="list-group-item dropdown-footer">
-      <Link to="/sign/login">
-        <Icon type="poweroff" /> 退出
-      </Link>
-    </li>
-  </ul>
-);
 
 export default NavBar;
