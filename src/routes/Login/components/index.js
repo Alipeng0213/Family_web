@@ -26,11 +26,10 @@ export default class Login extends Component {
       if(rsp.code == 200) {
         dispatch(routerRedux.replace("/", ""))
       }
-    }).catch(error=> console.log(error))
+    }).then(()=> _that.setState({loading: false}))
   };
 
   render() {
-
     return (
       <Layout className="full-layout login-page">
         <Content>

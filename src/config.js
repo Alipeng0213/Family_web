@@ -31,12 +31,12 @@ export default {
     }),
 
     afterResponse: response => {
-      const { status, message } = response;
-      if (status) {
+      const { code, message } = response;
+      if (code == 200) {
         return response;
       } else {
-        return response;
         notice.error(message)
+        return response;
       }
     },
     errorHandle: err => {
