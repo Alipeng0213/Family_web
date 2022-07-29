@@ -147,11 +147,11 @@ export default ({fetchMock, delay, mock, toSuccess, toError}) => {
         children: [
           {
             name: '登录页',
-            path: '/sign/login',
+            path: '/login',
           },
           {
             name: '注册页',
-            path: '/sign/register',
+            path: '/register',
           },
           {
             name: '锁屏',
@@ -187,18 +187,29 @@ export default ({fetchMock, delay, mock, toSuccess, toError}) => {
           },
           {
             name: '多级路由',
-            path: '/level-route/:sub?',
+            path: '/level-Route/:sub?',
           },
         ],
       },
       {
-        name: '通用场景',
+        name: 'Family',
         icon: 'BulbOutlined',
         path: '/business',
         children: [
           {
             name: 'CRUD',
             path: '/crud/:detail?',
+          }
+        ],
+      },
+      {
+        name: 'Family',
+        icon: 'BulbOutlined',
+        path: '/family',
+        children: [
+          {
+            name: '首页',
+            path: '/index',
           }
         ],
       },

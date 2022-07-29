@@ -78,7 +78,7 @@ export default class BasicLayout extends React.PureComponent {
   // 检查有户是否登录
   checkLoginState() {
     if (!$$.getStore('user') || !$$.getStore('token')) {
-      this.props.dispatch(routerRedux.replace('/sign/login'));
+      this.props.dispatch(routerRedux.replace('/login'));
     }
   }
 
@@ -168,17 +168,6 @@ export default class BasicLayout extends React.PureComponent {
     });
   };
 
-  /**
-   * 切换右边栏
-   */
-  toggleRightSide = _ => {
-    const { collapsedLeftSide, collapsedRightSide } = this.state;
-    this.setState({
-      collapsedLeftSide: collapsedRightSide ? true : collapsedLeftSide,
-      collapsedRightSide: !collapsedRightSide
-    });
-  };
-
   onChangeTheme = theme => {
     $$.setStore('theme', theme);
     this.setState({
@@ -247,7 +236,6 @@ export default class BasicLayout extends React.PureComponent {
                 <Header>
                   <TopBar
                     expand={expandTopBar}
-                    toggleRightSide={this.toggleRightSide}
                     collapsedRightSide={collapsedRightSide}
                     onCollapse={this.onCollapseTopBar}
                     currentMenu={currentMenu}
@@ -273,11 +261,6 @@ export default class BasicLayout extends React.PureComponent {
               </Layout>
             )}
           </Content>
-          <RightSideBar
-            collapsed={collapsedRightSide}
-            isMobile={isMobile}
-            onCollapse={this.toggleRightSide}
-          />
         </Layout>
         <SkinToolbox onChangeTheme={this.onChangeTheme} theme={theme} />
       </Layout>

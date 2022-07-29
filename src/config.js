@@ -2,6 +2,7 @@ import React from 'react';
 import PageLoading from 'components/Loading/PageLoading';
 import { antdNotice } from 'components/Notification';
 import { store } from 'cmn-utils';
+import {logout} from './service/login';
 
 // 系统通知, 定义使用什么风格的通知，normal或antdNotice
 const notice = antdNotice;
@@ -31,19 +32,20 @@ export default {
     }),
 
     afterResponse: response => {
-      const { code, message } = response;
-      if (code == 200) {
+      const { code, status, message } = response;
+      if (code == 200 || status) {
         return response;
+      } else if(code == 401) {
+        notice.error(message)
+        logout()
       } else {
         notice.error(message)
         return response;
       }
     },
     errorHandle: err => {
-      // 请求错误全局拦截
-      if (err.name === 'RequestError') {
         notice.error(err.text || err.message);
-      }
+        return err;
     }
   },
 

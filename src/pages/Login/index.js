@@ -1,37 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {connect, router, routerRedux} from 'dva';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Button, Input, Checkbox, Spin, Form } from 'antd';
 import logoImg from 'assets/images/logo1.png';
 import './index.less';
-import {login} from "../service";
+import {login} from "@/service/login";
+import BaseComponent from 'components/BaseComponent'
 
 const { Link } = router;
 const { Content } = Layout;
 const FormItem = Form.Item;
 
-@connect()
-export default class Login extends Component {
+export default class Login extends BaseComponent {
 
   state = {
       loading: false
   }
 
   handleSubmit = values => {
-
-    const { dispatch } = this.props;
     const _that = this;
     _that.setState({loading: true})
     login(values.username, values.password).then(rsp=> {
       if(rsp.code == 200) {
-        dispatch(routerRedux.replace("/", ""))
+        _that.history.push("/")
       }
-    }).then(()=> _that.setState({loading: false}))
+    }).then(()=> _that.setState({loading: false})).catch(err=> console.log(err))
   };
 
   render() {
     return (
-      <Layout className="full-layout login-page">
+      <Layout className="full-layout user-layout fixed login-page">
         <Content>
           <Spin tip="登录中..." spinning={this.state.loading}>
             <Form onFinish={this.handleSubmit} className="login-form" initialValues={{ userName: 'admin', password: 'admin', remember: true }}>

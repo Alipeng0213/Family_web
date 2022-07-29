@@ -59,7 +59,7 @@ export default class CardLayout extends React.PureComponent {
   checkLoginState() {
     const user = $$.getStore('user');
     if (!user) {
-      this.props.dispatch(routerRedux.replace('/sign/login'));
+      this.props.dispatch(routerRedux.replace('/login'));
     }
   }
 

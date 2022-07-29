@@ -34,6 +34,7 @@
     "react-dom": "^16.13.0",
     "react-fast-compare": "^3.0.1",
     "react-transition-group": "^4.3.0",
+    "service": "^0.1.4",
     "wangeditor": "^3.1.1"
   },
   "devDependencies": {

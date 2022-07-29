@@ -5,9 +5,7 @@ import {connect, router} from 'dva';
 import cx from 'classnames';
 import './style/index.less';
 import logoImg from 'assets/images/logo.png';
-import SearchBox from './SearchBox';
-import {loginOut} from '../../routes/Login/service';
-import {store} from "cmn-utils";
+import {logout} from '../../service/login';
 const { Link } = router;
 
 /**
@@ -15,7 +13,8 @@ const { Link } = router;
  */
 class NavBar extends PureComponent {
   state = {
-    openSearchBox: false
+    openSearchBox: false,
+    popoverVisible: false
   };
 
   static defaultProps = {
@@ -23,61 +22,19 @@ class NavBar extends PureComponent {
     theme: '' //'bg-dark',
   };
 
-  toggleFullScreen() {
-    if (
-      !document.fullscreenElement &&
-      !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement &&
-      !document.msFullscreenElement
-    ) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) {
-        document.documentElement.msRequestFullscreen();
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen(
-          Element.ALLOW_KEYBOARD_INPUT
-        );
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    }
-  }
-
-  onCloseSearchBox = () => {
-    this.setState({
-      openSearchBox: false
-    });
-  };
-
-  onOpenSearchBox = () => {
-    this.setState({
-      openSearchBox: true
-    });
-  };
-
   handlerLoginOut = () => {
-    loginOut().then(()=> {
-      store.removeStore("token")
-      store.removeStore("refresh_token")
-      store.removeStore("expiration")
-      store.removeStore("user")
-      window.location.reload()
-    })
+    logout()
   }
+
+  popoverHide = () => {
+    this.setState({popoverVisible: false});
+  };
+
+  handleVisibleChange = (newVisible: boolean) => {
+    this.setState({popoverVisible: newVisible});
+  };
 
   render() {
-    const { openSearchBox } = this.state;
     const {
       fixed,
       theme,
@@ -120,82 +77,40 @@ class NavBar extends PureComponent {
               <Icon type="wand" />
             </a>
           </li>
-          {isMobile ? (
-            <li className="mini-search" onClick={this.onOpenSearchBox}>
-              <a>
-                <Icon type="search" antd />
-              </a>
-            </li>
-          ) : (
-            <li onClick={this.toggleFullScreen}>
-              <a className="request-fullscreen">
-                <Icon type="screen-full" />
-              </a>
-            </li>
-          )}
         </ul>
-        {isMobile ? null : (
-          <form className="navbar-form navbar-search clearfix">
-            <div className="form-group">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="全文检索"
-                onClick={this.onOpenSearchBox}
-              />
-            </div>
-          </form>
-        )}
         <ul className="nav navbar-nav navbar-right clearfix">
-          <li>
-            <a href="https://github.com/LANIF-UI/dva-boot-admin">
-              <Icon type="GithubOutlined" antd />
-            </a>
-          </li>
           <li className="dropdown">
             <Popover
               placement="bottomRight"
-              title={'通知'}
+              visible={this.state.popoverVisible}
               overlayClassName={cx('navbar-popup', { [theme]: !!theme })}
-              content={''}
-              trigger="click"
-            >
-              <a className="dropdown-toggle">
-                <Icon type="radio-tower" />
-              </a>
-            </Popover>
-          </li>
-          <li className="dropdown">
-            <Popover
-              placement="bottomRight"
-              title={`WELCOME ${user.userName}`}
-              overlayClassName={cx('navbar-popup', { [theme]: !!theme })}
+              onVisibleChange={this.handleVisibleChange}
               content={
                 <ul className="dropdown-menu list-group dropdown-persist">
                   <li className="list-group-item">
-                    <a className="animated animated-short fadeInUp">
+                    <a className="animated animated-short fadeIn">
                       <Icon type="mail" /> 信息
                       <Badge count={5} className="label" />
                     </a>
                   </li>
                   <li className="list-group-item">
-                    <a className="animated animated-short fadeInUp">
+                    <a className="animated animated-short fadeIn">
                       <Icon type="users" /> 好友
                       <Badge count={6} className="label" />
                     </a>
                   </li>
                   <li className="list-group-item">
-                    <a className="animated animated-short fadeInUp">
-                      <Icon type="gear" /> 帐户设置
-                    </a>
+                    <Link to={"/user/center"} className="animated animated-short fadeIn" onClick={this.popoverHide}>
+                        <Icon type="gear" /> 个人中心
+                    </Link>
                   </li>
                   <li className="list-group-item">
-                    <a className="animated animated-short fadeInUp">
+                    <a className="animated animated-short fadeIn">
                       <Icon type="ring" /> 通知
                     </a>
                   </li>
                   <li className="list-group-item dropdown-footer" onClick={this.handlerLoginOut}>
-                    <a className="animated animated-short fadeInUp">
+                    <a className="animated animated-short fadeIn">
                       <Icon type="poweroff"/> 退出
                     </a>
                   </li>
@@ -204,16 +119,12 @@ class NavBar extends PureComponent {
               trigger="click"
             >
               <a className="dropdown-toggle">
-                <Badge dot>
-                  <Avatar src={require('assets/images/avatar.jpg')}>
-                    {user.userName}
-                  </Avatar>
-                </Badge>
+                  <Avatar src={require('assets/images/avatar.jpg')} />
+                  <span className="username">{user.username}</span>
               </a>
             </Popover>
           </li>
         </ul>
-        <SearchBox visible={openSearchBox} onClose={this.onCloseSearchBox} />
       </header>
     );
   }

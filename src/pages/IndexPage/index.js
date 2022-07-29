@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect, router } from 'dva';
 import { Input, Button, Select, Row, Col, Popover, Progress, Layout, Form } from 'antd';
 import './index.less';
-import '../../Login/components/index.less';
+import '@/pages/Login/index.less';
 import logoImg from 'assets/images/logo1.png';
 import Success from './Success';
-import {getOrder} from "@/routes/Index/service";
+import {getCurrentUser} from "@/service/user";
 const { Link } = router;
 const { Content } = Layout;
 
@@ -28,18 +28,6 @@ export default class Index extends Component {
   componentWillUnmount() {
   }
 
-  onGetCaptcha = () => {
-    let count = 59;
-    this.setState({ count });
-    this.interval = setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
-      }
-    }, 1000);
-  };
-
   getPasswordStatus = () => {
     if (!this.form) {
       return;
@@ -55,7 +43,7 @@ export default class Index extends Component {
   };
 
   handleSubmit = values => {
-    getOrder().then(rsp=> console.log(rsp))
+    getCurrentUser().then(rsp=> console.log(rsp))
   };
 
   checkConfirm = (rule, value) => {

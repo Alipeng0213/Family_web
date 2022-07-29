@@ -43,8 +43,6 @@ class TopBar extends Component {
   render() {
     const {
       expand,
-      toggleRightSide,
-      collapsedRightSide,
       onCollapse
     } = this.props;
     const { currentRoute } = this.state;
@@ -151,12 +149,6 @@ class TopBar extends Component {
               ))}
             </Breadcrumb>
           ) : null}
-          <a
-            className={cx('topbar-right', { collapse: collapsedRightSide })}
-            onClick={toggleRightSide}
-          >
-            <Icon type="into" />
-          </a>
         </header>
         <Mask
           visible={expand}

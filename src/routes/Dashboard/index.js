@@ -6,4 +6,6 @@ const routesConfig = app => ({
   component: dynamicWrapper(app, [import('./model')], () => import('./components'))
 });
 
-export default app => createRoute(app, routesConfig);
+export default app => {
+  return createRoute(app, routesConfig);
+}

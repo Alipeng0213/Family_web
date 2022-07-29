@@ -17,43 +17,61 @@ export const dynamicWrapper = (app, models, component) =>
     component
   });
 
+
 /**
  * 生成一组路由
  * @param {*} app
  * @param {*} routesConfig
  */
 export const createRoutes = (app, routesConfig) => {
-  const routes = routesConfig(app)
-    .map(config => createRoute(app, () => config))
-    .reduce((p, n) => {
-      if (n.length) {
-        return [...p, ...n];
-      } else {
-        return p.concat(n);
-      }
-    }, []);
+  if(typeof routesConfig == "function") {
+    routesConfig = routesConfig(app)
+  }
+  const routes = routesConfig.map(config => createRoute(app, config))
+      .reduce((p, n) => {
+        if (n.length) {
+          return [...p, ...n];
+        } else {
+          return p.concat(n);
+        }
+      }, []);
   return <Switch>{routes}</Switch>;
 };
+
 // 路由映射表
 window.dva_router_pathMap = {};
+
 /**
  * 生成单个路由
  * @param {*} app
  * @param {*} routesConfig
  */
 export const createRoute = (app, routesConfig) => {
-  const {
+  if(typeof routesConfig == "function") {
+    routesConfig = routesConfig(app)
+  }
+  let {
     component: Comp,
     path,
     indexRoute,
     title,
     exact,
     ...otherProps
-  } = routesConfig(app);
+  } = routesConfig;
+
+  // 生成子路由
+  if (otherProps.childRoutes && otherProps.childRoutes.length) {
+    let childRoutes = otherProps.childRoutes;
+    let childRoutes2 = childRoutes.filter(route => route.title)
+    let childRoutes1 = childRoutes.filter(route => !route.title)
+    otherProps.childRoutes = childRoutes1
+    let children = createRoutes(null, childRoutes2).props.children;
+    children.forEach(route=> otherProps.childRoutes.push(route))
+
+  }
 
   if (path && path !== '/') {
-    window.dva_router_pathMap[path] = { path, title, ...otherProps };
-    // 为子路由增加parentPath
+    // 为路由生产parentPath
     if (otherProps.childRoutes && otherProps.childRoutes.length) {
       otherProps.childRoutes.forEach(item => {
         if (window.dva_router_pathMap[item.key]) {
@@ -61,12 +79,13 @@ export const createRoute = (app, routesConfig) => {
         }
       });
     }
+    window.dva_router_pathMap[path] = { path, title, ...otherProps };
   }
 
   // 把Redirect放到第一个
   if (indexRoute && $$.isArray(otherProps.childRoutes)) {
     otherProps.childRoutes.unshift(
-      <Redirect key={path + '_redirect'} exact from={path} to={indexRoute} />
+        <Redirect key={path + '_redirect'} exact from={path} to={indexRoute} />
     );
   }
 

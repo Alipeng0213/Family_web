@@ -1,7 +1,7 @@
 import React from 'react';
 import dva, { dynamic, router } from 'dva';
 import createLoading from 'dva-loading';
-import { createHashHistory } from 'history';
+import { createHashHistory, createBrowserHistory } from 'history';
 import request from 'cmn-utils/lib/request';
 import createRoutes from '@/routes';
 import 'assets/styles/index.less';
@@ -17,7 +17,7 @@ const { Router } = router;
 
 // -> 初始化
 const app = dva({
-  history: createHashHistory({
+  history: createBrowserHistory({
     basename: homepage.startsWith('/') ? homepage : ''
   })
 });

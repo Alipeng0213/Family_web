@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect, router } from 'dva';
 import { Input, Button, Select, Row, Col, Popover, Progress, Layout, Form } from 'antd';
 import './index.less';
-import '../../Login/components/index.less';
+import '@/pages/Login/index.less';
 import logoImg from 'assets/images/logo1.png';
 import Success from './Success';
 const { Link } = router;
@@ -275,7 +275,7 @@ export default class Register extends Component {
               >
                 注册
               </Button>
-              <Link className="fr" to="/sign/login">
+              <Link className="fr" to="/login">
                 使用已有账户登录
               </Link>
             </Form.Item>
